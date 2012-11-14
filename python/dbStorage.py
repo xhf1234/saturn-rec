@@ -30,6 +30,13 @@ class BaseDbStorage(object):
     def _sql_insert(self, keys, values):
         return 'replace %s(%s) values(%s)' %(self._table, ','.join(keys), ','.join(map(self._value_to_sql, values)))
 
+    def _sql_columns_definition(self):
+        sql = ''
+        for col in self._columns:
+            sql = sql + (' '.join(col) + ',')
+        sql = sql  + ('primary key (%s)' % ','.join(self._primary_key))
+        return sql
+
     def _insert(self, keys, values):
         self._execSQL(self._sql_insert(keys, values))
 
@@ -46,6 +53,47 @@ class BaseDbStorage(object):
             if closeAfter and conn:
                 conn.close()
 
+class UserDbStorage(BaseDbStorage):
+    _table = 'user'
+    _columns = (
+        ('id', 'bigint unsigned', 'not null'),
+        ('imei', 'varchar(128)', 'not null')
+    )
+    _primary_key = ('id',)
+
+    def save(self, user):
+        keys = ('id', 'imei')
+        values = (user.id, user.imei)
+        self._insert(keys, values)
+
+class RecDbStorage(BaseDbStorage):
+    _table = 'recomend'
+    _columns = (
+        ('uid', 'bigint unsigned', 'not null'),
+        ('aid', 'bigint unsigned', 'not null'),
+        ('score', 'float', 'not null')
+    )
+    _primary_key = ('uid', 'aid')
+
+    def save(self, rec):
+        keys = ('uid', 'aid', 'score')
+        values = (rec.uid, rec.aid, rec.score)
+        self._insert(keys, values)
+
+class InstallDbStorage(BaseDbStorage):
+    _table = 'install'
+    _columns = (
+        ('uid', 'bigint unsigned', 'not null'),
+        ('aid', 'bigint unsigned', 'not null'),
+    )
+    _primary_key = ('uid', 'aid')
+
+    def save(self, install):
+        keys = ('uid', 'aid')
+        values = (install.uid, install.aid)
+        self._insert(keys, values)
+
+
 class AppDbStorage(BaseDbStorage):
     _table = 'app'
     _columns = (
@@ -54,13 +102,6 @@ class AppDbStorage(BaseDbStorage):
         ('name', 'varchar(128)', 'not null')
     )
     _primary_key = ('id',)
-
-    def _sql_columns_definition(self):
-        sql = ''
-        for col in self._columns:
-            sql = sql + (' '.join(col) + ',')
-        sql = sql  + ('primary key (%s)' % ','.join(self._primary_key))
-        return sql
 
     def save(self, app):
         keys = ('id', 'package', 'name')
