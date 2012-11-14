@@ -26,12 +26,10 @@ def importApp():
 
 def importOthers():
     input = codecs.open('../data/rec.data', 'r', 'gbk');
-    step = 100
-    start = 0
-    while (_importOthers(input, start, start+step-1)):
-        start = start + step
+    while (_importOthers(input, 100)):
+        pass
 
-def _importOthers(input, start, end):
+def _importOthers(input, step):
 
     users = {}
     recs = {}
@@ -43,9 +41,7 @@ def _importOthers(input, start, end):
             break
         count = count + 1
         print 'count=',count
-        if count < start:
-            continue
-        if count > end:
+        if count >= step:
             break
         line = line.encode('utf8')
         l = line.split('|', 3)
@@ -84,7 +80,7 @@ def _importOthers(input, start, end):
             score = rec[1]
             uid = users[imei].id
             recStore.save(Rec(uid, aid, score))
-    if count <= end:
+    if count == step:
         return True
     return False
 
