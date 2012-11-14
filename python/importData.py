@@ -26,14 +26,27 @@ def importApp():
 
 def importOthers():
     input = codecs.open('../data/rec.data', 'r', 'gbk');
+    step = 100
+    start = 0
+    while (_importOthers(input, start, start+step-1)):
+        start = start + step
+
+def _importOthers(input, start, end):
 
     users = {}
     recs = {}
     installs = {}
-    count = 0
-    for line in input.readlines():
+    count = -1
+    while (True):
+        line = input.readline()
+        if (not line):
+            break
         count = count + 1
         print 'count=',count
+        if count < start:
+            continue
+        if count > end:
+            break
         line = line.encode('utf8')
         l = line.split('|', 3)
         imei = l[0]
@@ -71,6 +84,9 @@ def importOthers():
             score = rec[1]
             uid = users[imei].id
             recStore.save(Rec(uid, aid, score))
+    if count <= end:
+        return True
+    return False
 
 if __name__ == '__main__':
     importApp();
