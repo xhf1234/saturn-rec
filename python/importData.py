@@ -76,5 +76,6 @@ def importOthers():
             recStore.save(Rec(uid, aid, score))
 
 if __name__ == '__main__':
+    importApp();
     importOthers()
     exit(0)
