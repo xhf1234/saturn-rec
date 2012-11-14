@@ -4,6 +4,9 @@
 import codecs
 from data import App
 import utils
+from dbStorage import AppDbStorage
+
+appStore = AppDbStorage()
 
 def importApp():
     input = codecs.open('../data/app.data', 'r', 'gbk');
@@ -15,7 +18,8 @@ def importApp():
         package = l[0].strip()
         name = l[1].strip()
         apps.append(App(package, name))
-    print utils.listToString(apps)
+    for app in apps:
+        appStore.save(app)
 
 if __name__ == '__main__':
     importApp()
