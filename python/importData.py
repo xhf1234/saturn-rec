@@ -55,9 +55,6 @@ def importOthers():
                 recApps.append((package, score))
         recs[imei] = recApps
 
-        if count == 100:
-            break
-
     for imei in users:
         userStore.save(users[imei])
 
