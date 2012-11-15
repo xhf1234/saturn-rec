@@ -1,0 +1,37 @@
+/*jslint browser: true, devel: true, indent: 4, nomen:true, vars: true */
+/*global define */
+
+define(function (require, exports, module) {
+    "use strict";
+
+    var Backbone = require('../lib/backbone');
+    var BaseView = require('./BaseView');
+
+    var Form = BaseView.extend({
+        el: 'form#form-rec',
+
+        events: {
+            'click .btn-submit': 'onSubmit'
+        },
+
+        initialize: function () {
+            var form = this;
+            this.$('.user-imei').keyup(function (e) {
+                if (e.which === 13) {
+                    form.onSubmit();
+                }
+            });
+        },
+
+        onSubmit: function (evt) {
+            evt.preventDefault();
+            var name = this.$('.user-imei').val();
+            if (!name) {
+                alert('请输入用户标识');
+            } else {
+            }
+        }
+    });
+
+    return Form;
+});
