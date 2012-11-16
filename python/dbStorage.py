@@ -67,7 +67,7 @@ class UserDbStorage(BaseDbStorage):
         self._insert(keys, values)
 
 class RecDbStorage(BaseDbStorage):
-    _table = 'recomend'
+    _table = 'recommend'
     _columns = (
         ('uid', 'bigint unsigned', 'not null'),
         ('aid', 'bigint unsigned', 'not null'),

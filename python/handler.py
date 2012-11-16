@@ -20,7 +20,7 @@ class _StaticHandler(BaseHandler):
 
 class PageHandler(BaseHandler):
     def get(self):
-        self.render('web/html/index.html')
+        self.render('web/html/home.html')
 
 class CssHandler(_StaticHandler):
     def _staticDir(self):

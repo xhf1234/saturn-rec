@@ -17,7 +17,7 @@
             <div class="row-fluid">
                 <div class="span2"></div>
                 <div class="span8 well">
-                    <form id="form-rec" class="form-inline">
+                    <form class="form-rec form-inline">
                         <legend>应用推荐</legend>
                         <label>
                             用户: 
@@ -29,16 +29,18 @@
                 <div class="span2"></div>
             </div>
         </div>
+
+        <input id="pageName" type="hiden" value="Home"/>
         </body>
 
-        <script type="text/javascript" src="/vendor/sea.js"></script>
-        <script type="text/javascript" src="/vendor/jquery.js"></script>
+    <script type="text/javascript" src="/vendor/sea.js"></script>
+    <script type="text/javascript" src="/vendor/jquery.js"></script>
     <script type="text/javascript" src="/vendor/less.js"></script>
     <script type="text/javascript" src="/vendor/underscore.js"></script>
     <script type="text/javascript" src="/vendor/backbone.js"></script>
     <script type="text/javascript" src="/vendor/bootstrap.js"></script>
     <script type="text/javascript" src="/vendor/handlebars.js"></script>
     <script type="text/javascript">
-        seajs.use(['/page/index']);
+        seajs.use(['/main']);
     </script>
 </html>

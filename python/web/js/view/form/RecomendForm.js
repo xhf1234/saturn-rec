@@ -4,11 +4,11 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var Backbone = require('../lib/backbone');
-    var BaseView = require('./BaseView');
+    var Backbone = require('../../lib/backbone');
+    var BaseForm = require('./BaseForm');
 
-    var Form = BaseView.extend({
-        el: 'form#form-rec',
+    var Form = BaseForm.extend({
+        el: '.form-rec',
 
         events: {
             'click .btn-submit': 'onSubmit'
@@ -18,17 +18,18 @@ define(function (require, exports, module) {
             var form = this;
             this.$('.user-imei').keyup(function (e) {
                 if (e.which === 13) {
-                    form.onSubmit();
+                    form.onSubmit(e);
                 }
             });
         },
 
         onSubmit: function (evt) {
             evt.preventDefault();
-            var name = this.$('.user-imei').val();
-            if (!name) {
+            var imei = this.$('.user-imei').val();
+            if (!imei) {
                 alert('请输入用户标识');
             } else {
+                this.trigger('submit', imei);
             }
         }
     });
