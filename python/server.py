@@ -4,6 +4,7 @@ import tornado.ioloop
 import tornado.web
 import os
 from handler import *
+import const
 
 settings = {
     'debug': True
@@ -20,5 +21,5 @@ application = tornado.web.Application([
 ], **settings)
 
 if __name__ == '__main__':
-    application.listen(8080)
+    application.listen(const.webPort)
     tornado.ioloop.IOLoop.instance().start()

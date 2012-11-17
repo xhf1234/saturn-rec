@@ -3,11 +3,12 @@
 
 import MySQLdb as DB
 from data import App, RecApp
+import const
 
 class BaseDbStorage(object):
     _host = 'localhost'
-    _user = 'root'
-    _password = '123456'
+    _user = const.dbUser
+    _password = const.dbPassword
     _db = 'rec'
 
     _check_init_database_ = False
