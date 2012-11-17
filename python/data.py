@@ -18,6 +18,21 @@ class App(object):
 
     def __str__(self):
         return "[id:%d\tpackage:%s\tname:%s]" % (self.id, self.package, self.name) 
+
+    def toJson(self):
+        return '{"id":%d, "package":"%s", "name":"%s"}' % (self.id, self.package, self.name)
+
+class RecApp(object):
+    def __init__(self, app, score):
+        self.app = app
+        self.score = score
+
+    def __str__(self):
+        return "app: %s\tscore: %.1f" % (str(self.app), self.score) 
+
+    def toJson(self):
+        return '{"app": %s, "score":%.1f}' % (self.app.toJson(), self.score)
+    
         
 class User(object):
     def __init__(self, imei, id=None):

@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 import tornado.web
+from service import AppService
+import utils
+import json
+
+appService = AppService()
 
 class BaseHandler(tornado.web.RequestHandler):
     def _getFile(self, file):
@@ -18,9 +23,26 @@ class _StaticHandler(BaseHandler):
         file = 'web/%s/%s' %(self._staticDir(), file)
         super(_StaticHandler, self)._getFile(file)
 
-class PageHandler(BaseHandler):
+class HomeHandler(BaseHandler):
     def get(self):
         self.render('web/html/home.html')
+
+class ApiHandler(BaseHandler):
+    def _writeJson(self, json):
+        self.write(json)
+        self.set_header('Content-Type', 'application/json')
+        self.set_status(200)
+        self.flush()
+
+class RecommendHandler(ApiHandler):
+    def get(self, imei):
+        apps = appService.getRecommendApps(imei)
+        self._writeJson(utils.listToJson(apps))
+
+class InstallHandler(ApiHandler):
+    def get(self, imei):
+        apps = appService.getInstallApps(imei)
+        self._writeJson(utils.listToJson(apps))
 
 class CssHandler(_StaticHandler):
     def _staticDir(self):
@@ -35,3 +57,19 @@ class JsHandler(_StaticHandler):
 
     def _type(self):
         return 'text/javascript'
+
+class HandlebarsHandler(BaseHandler):
+    def get(self, file):
+        file = 'web/template/' + file[:-3]
+        try:
+            with open(file, 'r') as file:
+                content = file.read()
+                output = {"template": content}
+                output = json.dumps(output)
+                output = 'define(function (require, exports, module) {return ' + output + ';});'
+                self.set_header('Content-Type', 'text/javascript')
+                self.set_status(200)
+                self.write(output)
+                self.flush()
+        except:
+            self.set_status(404)

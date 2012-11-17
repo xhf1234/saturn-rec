@@ -5,13 +5,13 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseCollection = require('./BaseCollection');
-    var Recommend = require('../model/Recommend');
+    var Install = require('../model/Install');
 
-    var RecommendCollection = BaseCollection.extend({
-        model: Recommend,
+    var InstallCollection = BaseCollection.extend({
+        model: Install,
         
         url: function () {
-            return '/api/recommend/' + this.imei;
+            return '/api/install/' + this.imei;
         },
 
         fetch: function (options) {
@@ -20,6 +20,6 @@ define(function (require, exports, module) {
         }
     });
 
-    return RecommendCollection;
+    return InstallCollection;
 });
 

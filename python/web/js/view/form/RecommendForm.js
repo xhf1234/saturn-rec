@@ -8,7 +8,6 @@ define(function (require, exports, module) {
     var BaseForm = require('./BaseForm');
 
     var Form = BaseForm.extend({
-        el: '.form-rec',
 
         events: {
             'click .btn-submit': 'onSubmit'

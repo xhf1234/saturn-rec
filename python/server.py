@@ -3,15 +3,19 @@
 import tornado.ioloop
 import tornado.web
 import os
-from handler import PageHandler, CssHandler, JsHandler
+from handler import *
 
 settings = {
     'debug': True
 }
 
 application = tornado.web.Application([
-    (r'/', PageHandler),
+    (r'/', HomeHandler),
+    (r'/home', HomeHandler),
+    (r'/api/recommend/([^/]+)', RecommendHandler),
+    (r'/api/install/([^/]+)', InstallHandler),
     (r'/(.+\.css)$', CssHandler),
+    (r'/(.+\.handlebars\.js)$', HandlebarsHandler),
     (r'/(.+\.js)$', JsHandler)
 ], **settings)
 

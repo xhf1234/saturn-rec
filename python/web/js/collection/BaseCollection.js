@@ -12,19 +12,19 @@ define(function (require, exports, module) {
         fetchOptions: {
             success: function () {
                 this.onFetchSuccess(this.toJSON());
+            },
+
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('textStatus = ' + textStatus);
             }
-        },
-
-        initialize: function () {
-            Backbone.Collection.prototype.initialize.apply(this, arguments);
-
-            this.fetchOptions.success.bind(this);
         },
 
         fetch: function (options) {
             options = options || {};
             _.defaults(options, this.fetchOptions);
-            Backbone.Collection.prototype.fetch.apply(this, options);
+            options.success = options.success.bind(this);
+            options.error = options.error.bind(this);
+            Backbone.Collection.prototype.fetch.call(this, options);
         },
         
         onFetchSuccess: function (datas) {

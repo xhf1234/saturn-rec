@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <!-- bootstrap -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <!-- bootstrap -->
         <link href="/bootstrap.css" rel="stylesheet" media="screen"/>
         <title>清华大学-推荐系统</title>
     </head>
@@ -15,8 +14,7 @@
         </div>
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span2"></div>
-                <div class="span8 well">
+                <div class="span8 offset2 well">
                     <form class="form-rec form-inline">
                         <legend>应用推荐</legend>
                         <label>
@@ -26,11 +24,16 @@
                         <button  class="btn-submit btn-primary">推荐</button>
                     </form>
                 </div>
-                <div class="span2"></div>
+            </div>
+            <div class="row-fluid">
+                <div class="install-list-wrap span4 offset1">
+                </div>
+                <div class="recommend-list-wrap span5 offset1">
+                </div>
             </div>
         </div>
 
-        <input id="pageName" type="hiden" value="Home"/>
+        <input id="pageName" type="hidden" value="Home"/>
         </body>
 
     <script type="text/javascript" src="/vendor/sea.js"></script>

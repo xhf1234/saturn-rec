@@ -2,6 +2,7 @@
 # encoding=utf8
 
 import MySQLdb as DB
+from data import App, RecApp
 
 class BaseDbStorage(object):
     _host = 'localhost'
@@ -9,18 +10,31 @@ class BaseDbStorage(object):
     _password = '123456'
     _db = 'rec'
 
-    def __init__(self, ):
-        self._createTableIfNotExists()
+    _check_init_database_ = False
+
+    def __init__(self):
+        if not BaseDbStorage._check_init_database_:
+            # create database
+            self._execSQL('CREATE DATABASE IF NOT EXISTS %s' % self._db)
+            BaseDbStorage._check_init_database_ = True
+            # create tables
+            self._execSQL(UserDbStorage._sql_create_table())
+            self._execSQL(AppDbStorage._sql_create_table())
+            self._execSQL(RecDbStorage._sql_create_table())
+            self._execSQL(InstallDbStorage._sql_create_table())
+            # create index
+            self._execSQL('CREATE UNIQUE INDEX index_imei ON user(imei(16))')
 
     def _getConn(self):
-        conn = DB.connect(self._host, self._user, self._password, self._db)
+        if self._check_init_database_:
+            conn = DB.connect(self._host, self._user, self._password, self._db)
+        else:
+            conn = DB.connect(self._host, self._user, self._password)
         return conn
 
-    def _createTableIfNotExists(self):
-        self._execSQL(self._sql_create_table());
-
-    def _sql_create_table(self):
-        return "CREATE TABLE IF NOT EXISTS %s (%s)" % (self._table, self._sql_columns_definition())
+    @classmethod
+    def _sql_create_table(clazz):
+        return "CREATE TABLE IF NOT EXISTS %s (%s)" % (clazz._table, clazz._sql_columns_definition())
 
     def _value_to_sql(self, value):
         if isinstance(value, str):
@@ -30,11 +44,12 @@ class BaseDbStorage(object):
     def _sql_insert(self, keys, values):
         return 'replace %s(%s) values(%s)' %(self._table, ','.join(keys), ','.join(map(self._value_to_sql, values)))
 
-    def _sql_columns_definition(self):
+    @classmethod
+    def _sql_columns_definition(clazz):
         sql = ''
-        for col in self._columns:
+        for col in clazz._columns:
             sql = sql + (' '.join(col) + ',')
-        sql = sql  + ('primary key (%s)' % ','.join(self._primary_key))
+        sql = sql  + ('primary key (%s)' % ','.join(clazz._primary_key))
         return sql
 
     def _insert(self, keys, values):
@@ -52,6 +67,17 @@ class BaseDbStorage(object):
         finally:
             if closeAfter and conn:
                 conn.close()
+    
+    def _querySql(self, sql):
+        conn = self._getConn()
+        try:
+            cur = conn.cursor()
+            cur.execute(sql)
+            print sql
+            return cur.fetchall()
+        finally:
+            conn.close()
+
 
 class UserDbStorage(BaseDbStorage):
     _table = 'user'
@@ -65,6 +91,13 @@ class UserDbStorage(BaseDbStorage):
         keys = ('id', 'imei')
         values = (user.id, user.imei)
         self._insert(keys, values)
+    
+    def getId(self, imei):
+        results = self._querySql("SELECT id FROM %s WHERE imei='%s'" % (self._table, imei))
+        if len(results) > 0:
+            return results[0][0]
+        else:
+            return None
 
 class RecDbStorage(BaseDbStorage):
     _table = 'recommend'
@@ -93,6 +126,13 @@ class InstallDbStorage(BaseDbStorage):
         values = (install.uid, install.aid)
         self._insert(keys, values)
 
+    def getAppIds(self, userId):
+        sql = "SELECT aid FROM %s WHERE uid=%s" % (self._table, userId)
+        results = self._querySql(sql)
+        rList = []
+        for row in results:
+            rList.append(row[0])
+        return rList
 
 class AppDbStorage(BaseDbStorage):
     _table = 'app'
@@ -108,5 +148,33 @@ class AppDbStorage(BaseDbStorage):
         values = (app.id, app.package, app.name)
         self._insert(keys, values)
 
+    def getInstallApps(self, userId):
+        sql = "SELECT a.id, a.package, a.name FROM app a LEFT JOIN install i ON a.id=i.aid WHERE i.uid = %s" \
+            % userId
+        results = self._querySql(sql)
+        rList = []
+        for row in results:
+            id = row[0]
+            package = row[1]
+            name = row[2]
+            rList.append(App(package, name, id))
+        return rList
+
+    def getRecommendApps(self, userId):
+        sql = "SELECT a.id, a.package, a.name, r.score FROM app a LEFT JOIN recommend r ON a.id=r.aid WHERE r.uid = %s" \
+            % userId
+        results = self._querySql(sql)
+        rList = []
+        for row in results:
+            id = row[0]
+            package = row[1]
+            name = row[2]
+            score = row[3]
+            app = App(package, name, id)
+            recApp = RecApp(app, score)
+            rList.append(recApp)
+        return rList
+
 if __name__ == '__main__':
-    AppDbStorage()
+    userStore = UserDbStorage()
+    print userStore.getId('860984010484586')

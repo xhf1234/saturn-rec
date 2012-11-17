@@ -4,14 +4,11 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var Backbone = require('../../lib/backbone');
-    var BaseView = require('../BaseView');
+    var BaseModel = require('./BaseModel');
 
-    var BasePage = BaseView.extend({
-        el: 'body'
+    var Install = BaseModel.extend({
     });
-
-    return BasePage;
-
+    
+    return Install;
 });
 

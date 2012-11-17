@@ -5,31 +5,61 @@ define(function (require, exports, module) {
     "use strict";
 
     var $ = require('../../lib/jquery');
-    var Backbone = require('../../lib/backbone');
-    var BaseView = require('../BaseView');
+    var BasePage = require('./BasePage');
 
-    var HomePage = Backbone.View.extend({
+    var HomePage = BasePage.extend({
+
         initialize: function () {
-            BaseView.prototype.initialize.apply(this, arguments);
+            BasePage.prototype.initialize.apply(this, arguments);
 
-            var RecomendForm = require('../form/RecomendForm');
-            this.recomendForm = new RecomendForm();
-            this.recomendForm.on('submit', this.onRecSubmit.bind(this));
-            this.recomendForm.$('input.nick-name').focus();
+            var RecommendForm = require('../form/RecommendForm');
+            this.recommendForm = new RecommendForm({
+                el: '.form-rec'
+            });
+            this.recommendForm.on('submit', this.onRecSubmit.bind(this));
+            this.recommendForm.$('input.nick-name').focus();
 
-            var RecomendCollection = require('../../collection/RecomendCollection');
-            this.recomendCollection = new RecomendCollection();
+            var RecommendCollection = require('../../collection/RecommendCollection');
+            this.recommendCollection = new RecommendCollection();
+
+            var InstallCollection = require('../../collection/InstallCollection');
+            this.installCollection = new InstallCollection();
+        },
+        
+        renderRecommendList: function (recommends) {
+            if (!this.recommendList) {
+                var RecommendList = require('../list/RecommendList');
+                this.recommendList = new RecommendList();
+                this.$('.recommend-list-wrap').append(this.recommendList.el);
+            }
+            this.recommendList.render(recommends);
+        },
+        
+        renderInstallList: function (installs) {
+            if (!this.installList) {
+                var InstallList = require('../list/InstallList');
+                this.installList = new InstallList();
+                this.$('.install-list-wrap').append(this.installList.el);
+            }
+            this.installList.render(installs);
         },
 
-        
         /* -------------------- Event Listener ----------------------- */
         
         onRecSubmit: function (imei) {
-            this.recomendCollection.on('success', function (recomends) {
-                this.off('success');
-                console.log('recomends = ' + recomends);
+            this.recommendCollection.on('success', function (recommends) {
+                this.recommendCollection.off('success');
+                this.renderRecommendList(recommends);
+            }, this);
+            this.recommendCollection.fetch({
+                imei: imei
             });
-            this.recomendCollection.fetch({
+
+            this.installCollection.on('success', function (installs) {
+                this.installCollection.off('success');
+                this.renderInstallList(installs);
+            }, this);
+            this.installCollection.fetch({
                 imei: imei
             });
         }
