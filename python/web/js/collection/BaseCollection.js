@@ -11,7 +11,7 @@ define(function (require, exports, module) {
 
         fetchOptions: {
             success: function () {
-                this.onFetchSuccess(this.toJSON());
+                this.trigger('success');
             },
 
             error: function (jqXHR, textStatus, errorThrown) {
@@ -25,10 +25,6 @@ define(function (require, exports, module) {
             options.success = options.success.bind(this);
             options.error = options.error.bind(this);
             Backbone.Collection.prototype.fetch.call(this, options);
-        },
-        
-        onFetchSuccess: function (datas) {
-            this.trigger('success', datas);
         }
         
     });

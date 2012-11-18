@@ -16,19 +16,46 @@ define(function (require, exports, module) {
 
         tmpl: require('/list/BaseList.handlebars'),
 
-        render: function (renderData) {
-            renderData = renderData || {};
+        Collection: null,
 
+        Item: null,
+
+        initialize: function () {
+            var Collection = this.Collection;
+            this.collection = new Collection();
+        },
+
+        render: function (renderData) {
+
+            renderData = renderData || {};
             renderData = _.extend({
                 headerList: this.headerList
             }, renderData);
             this.el.innerHTML = this.template(renderData);
+
+            var datas = this.collection.toJSON();
+            datas.forEach(function (data) {
+                this.appendItem(this.Item, data);
+            }, this);
         },
 
         appendItem: function (Item, data) {
             var item = new Item();
             item.render(data);
             this.$('tbody').append(item.el);
+        },
+
+        fetch: function (options) {
+            options = options || {};
+            options.success = this.onFetchedSuccess.bind(this);
+            this.collection.fetch(options);
+        },
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onFetchedSuccess: function (evt) {
+            this.render();
         }
     });
 

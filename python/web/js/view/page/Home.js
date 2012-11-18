@@ -18,50 +18,26 @@ define(function (require, exports, module) {
             });
             this.recommendForm.on('submit', this.onRecSubmit.bind(this));
             this.recommendForm.$('input.nick-name').focus();
-
-            var RecommendCollection = require('../../collection/RecommendCollection');
-            this.recommendCollection = new RecommendCollection();
-
-            var InstallCollection = require('../../collection/InstallCollection');
-            this.installCollection = new InstallCollection();
         },
         
-        renderRecommendList: function (recommends) {
+        /* -------------------- Event Listener ----------------------- */
+        
+        onRecSubmit: function (imei) {
+            var options = {imei: imei};
+
             if (!this.recommendList) {
                 var RecommendList = require('../list/RecommendList');
                 this.recommendList = new RecommendList();
                 this.$('.recommend-list-wrap').append(this.recommendList.el);
             }
-            this.recommendList.render(recommends);
-        },
-        
-        renderInstallList: function (installs) {
+            this.recommendList.fetch(options);
+
             if (!this.installList) {
                 var InstallList = require('../list/InstallList');
                 this.installList = new InstallList();
                 this.$('.install-list-wrap').append(this.installList.el);
             }
-            this.installList.render(installs);
-        },
-
-        /* -------------------- Event Listener ----------------------- */
-        
-        onRecSubmit: function (imei) {
-            this.recommendCollection.on('success', function (recommends) {
-                this.recommendCollection.off('success');
-                this.renderRecommendList(recommends);
-            }, this);
-            this.recommendCollection.fetch({
-                imei: imei
-            });
-
-            this.installCollection.on('success', function (installs) {
-                this.installCollection.off('success');
-                this.renderInstallList(installs);
-            }, this);
-            this.installCollection.fetch({
-                imei: imei
-            });
+            this.installList.fetch(options);
         }
     });
     

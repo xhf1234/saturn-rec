@@ -6,20 +6,14 @@ define(function (require, exports, module) {
 
     var BaseList = require('./BaseList');
 
-    var RecommendItem = require('./item/RecommendItem');
-
     var RecommendList = BaseList.extend({
         className: BaseList.prototype.className + ' well',
 
         headerList: ['推荐应用', '评分'],
-        
-        render: function (recommends) {
-            BaseList.prototype.render.apply(this, arguments);
 
-            recommends.forEach(function (recApp) {
-                this.appendItem(RecommendItem, recApp);
-            }, this);
-        }
+        Collection: require('../../collection/RecommendCollection'),
+
+        Item: require('./item/RecommendItem')
     });
 
     return RecommendList;
