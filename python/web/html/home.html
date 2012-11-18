@@ -21,7 +21,17 @@
                             用户: 
                             <input class="user-imei"/>
                         </label>
-                        <button  class="btn-submit btn-primary">推荐</button>
+                        <div class="btn-group">
+                            <button class="btn-submit btn btn-primary">推荐</button>
+                            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                {% for user in randomUsers %}
+                                <li><a href="" class="random-imei">{{user.imei}}</a></li>
+                                {% end %}
+                            </ul>
+                        </div>
                     </form>
                 </div>
             </div>

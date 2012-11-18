@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 import tornado.web
-from service import AppService
+from service import AppService, UserService
 import utils
 import json
 
 appService = AppService()
+userService = UserService()
 
 class BaseHandler(tornado.web.RequestHandler):
     def _getFile(self, file):
@@ -25,7 +26,8 @@ class _StaticHandler(BaseHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        self.render('web/html/home.html')
+        users = userService.getRandomUsers(10)
+        self.render('web/html/home.html', randomUsers = users)
 
 class ApiHandler(BaseHandler):
     def _writeJson(self, json):

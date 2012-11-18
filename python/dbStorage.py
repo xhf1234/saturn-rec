@@ -2,7 +2,7 @@
 # encoding=utf8
 
 import MySQLdb as DB
-from data import App, RecApp
+from data import App, RecApp, User
 import const
 
 class BaseDbStorage(object):
@@ -100,6 +100,21 @@ class UserDbStorage(BaseDbStorage):
         else:
             return None
 
+    def count(self):
+        sql = "SELECT count(*) from %s" % self._table
+        results = self._querySql(sql)
+        return results[0][0]
+    
+    def getUsers(self, offset, limit):
+        sql = "SELECT id, imei FROM %s LIMIT %d OFFSET %d" % (self._table, limit, offset)
+        results = self._querySql(sql)
+        rList = []
+        for row in results:
+            id = row[0]
+            imei = row[1]
+            rList.append(User(imei, id))
+        return rList
+
 class RecDbStorage(BaseDbStorage):
     _table = 'recommend'
     _columns = (
@@ -178,4 +193,4 @@ class AppDbStorage(BaseDbStorage):
 
 if __name__ == '__main__':
     userStore = UserDbStorage()
-    print userStore.getId('860984010484586')
+    print userStore.count()

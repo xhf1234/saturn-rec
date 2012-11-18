@@ -23,6 +23,7 @@ class AppStore(BaseStore):
 class UserStore(BaseStore):
     
     _idCache = FIFOCache()
+    _countCache = None
     
     def getUserByImei(self, imei):
         user = self._idCache.get(imei)
@@ -31,10 +32,16 @@ class UserStore(BaseStore):
             user = User(imei, userId)
             self._idCache.put(imei, user)
         return user
+    
+    def count(self):
+        if self._countCache is None:
+            self._countCache = userDb.count()
+        return self._countCache
+    
+    def getUsers(self, offset, limit):
+        return userDb.getUsers(offset, limit)
 
 if __name__ == '__main__':
     appStore = AppStore()
-
-    user = User('860984010484586')
-    apps = appStore.getRecommendApps(user.id)
-    print utils.listToString(apps)
+    userStore = UserStore()
+    print userStore.count()

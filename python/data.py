@@ -50,6 +50,9 @@ class User(object):
     def __str__(self):
         return "[id:%d\timei:%s]" % (self.id, self.imei) 
 
+    def toJson(self):
+        return '{"id": %d, "imei": %s}' % (self.id, self.imei)
+
 class Rec(object):
     def __init__(self, uid, aid, score):
         self.uid = uid

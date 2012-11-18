@@ -10,7 +10,8 @@ define(function (require, exports, module) {
     var Form = BaseForm.extend({
 
         events: {
-            'click .btn-submit': 'onSubmit'
+            'click .btn-submit': 'onSubmit',
+            'click .random-imei': 'onSelectUser'
         },
 
         initialize: function () {
@@ -20,6 +21,15 @@ define(function (require, exports, module) {
                     form.onSubmit(e);
                 }
             });
+        },
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onSelectUser: function (evt) {
+            evt.preventDefault();
+            this.$('.user-imei').val(evt.currentTarget.text);
+            this.onSubmit(evt);
         },
 
         onSubmit: function (evt) {
